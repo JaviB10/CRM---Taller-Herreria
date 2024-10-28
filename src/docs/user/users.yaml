@@ -1,0 +1,274 @@
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        "200":
+          description: All users were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Users'
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    post:
+      summary: Create new users
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createUser'
+      responses:
+        "201":
+          description: User created successfully and stored in the database
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Users'
+        "400":
+          description: Client error occurred during the request
+          content:
+            application/json:
+              examples:
+                EntityAlreadyExists:
+                  summary: User Already Exists
+                  value:
+                    message: "User already exists"
+                IncompleteValues:
+                  summary: Incomplete Values
+                  value:
+                    message: "The user has not provided all the required values"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/users/{uid}:
+    get:
+      summary: Get user
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: User was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Users'
+        "400":
+          description: Client error occurred during the request
+          content:
+            application/json:
+              examples:
+                EntityAlreadyExists:
+                  summary: User Already Exists
+                  value:
+                    message: "User already exists"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    put:
+      summary: Update user
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateUser'
+      responses:
+        "200":
+          description: "User updated successfully"
+        "404":
+          description: "User not found"
+        "400":
+          description: Client error occurred during the request
+          content:
+            application/json:
+              examples:
+                EntityContactAlreadyExistsPhone:
+                  summary: Phone number already exists
+                  value:
+                    message: "The phone number has already been taken"
+                EntityContactAlreadyExistsEmail:
+                  summary: Email address already exists
+                  value:
+                    message: "The email has already been taken"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    delete:
+      summary: Delete user
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: "User deleted successfully"
+        "404":
+          description: "User not found"
+        "400":
+          description: "Admin users cannot be deleted"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/users/email:
+    post:
+      summary: Get user by email
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/getUserByEmail'
+      responses:
+        "200":
+          description: User was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Users'
+        "404":
+          description: "User not found" 
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado de MongoDB (ObjectId)
+        name:
+          type: String
+          description: Nombre del usuario
+        lastName:
+          type: String
+          description: Apellido del usuario
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+          example: "3412295482"
+        email:
+          type: String
+          description: Correo electrónico del usuario
+          example: "javi4195@gmail.com"
+        role:
+          type: String
+          description: Rol que tendrá el usuario dentro del sitio
+          enum:
+            - ADMIN
+            - USER
+      example:
+        _id: ObjectId('dasdasdas545sd4a14')
+        name: "Javier"
+        lastName: "Ballon"
+        phone: "3412295482"
+        email: "javi4195@gmail.com"
+        role: "USER"
+  requestBodies:
+    createUser:
+      type: object
+      properties:
+        name:
+          type: String
+          description: Nombre del usuario
+        lastName:
+          type: String
+          description: Apellido del usuario
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+          example: "3412295482"
+        email:
+          type: String
+          description: Correo electrónico del usuario
+          example: "javi4195@gmail.com"
+        password:
+          type: String
+          description: Contraseña que servira para el ingreso
+        role:
+          type: String
+          description: Rol que tendrá el usuario dentro del sitio
+          enum:
+            - ADMIN
+            - USER
+      example:
+        name: "Julio"
+        lastName: "Ballon"
+        phone: "3413967684"
+        email: "ballonj35@gmail.com"
+        password: "TOPgun22"
+        role: "ADMIN"
+    updateUser:
+      properties:
+        name:
+          type: String
+          description: Nombre del usuario
+        lastName:
+          type: String
+          description: Apellido del usuario
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+          example: "3412295482"
+        email:
+          type: String
+          description: Correo electrónico del usuario
+          example: "javi4195@gmail.com"
+      example:
+        name: "Julio"
+        lastName: "Ballon"
+        phone: "3413967684"
+        email: "ballonj35@gmail.com"
+    getUserByEmail:
+      properties:
+        email:
+          type: String
+          description: Correo electrónico del usuario
+          example: "javi4195@gmail.com"
+      example:
+        email: "ballonj35@gmail.com"

@@ -1,0 +1,197 @@
+paths:
+  /api/payments:
+    get:
+      summary: Get all payments
+      security:
+        - bearerAuth: []
+      tags:
+        - Payments
+      responses:
+        "200":
+          description: All payments were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Payments'
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/payments/{pid}:
+    get:
+      summary: Get payment
+      security:
+        - bearerAuth: []
+      tags:
+        - Payments
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Payment ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Payment was successfully retrieved
+          content:
+            application/json:
+              schema:
+                  type: array
+                  items:
+                    $ref: '#components/schemas/Payments'
+        "404":
+          decription: Payment not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    put:
+      summary: Update payment
+      security:
+        - bearerAuth: []
+      tags:
+        - Payments
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Payment ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updatePayment'
+      responses:
+        "200":
+          description: Payment updated successfully
+          content:
+            application/json:
+              schema:
+                  type: array
+                  items:
+                    $ref: '#components/schemas/Payments'
+        "404":
+          decription: Payment not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    delete:
+      summary: Delete payment
+      security:
+        - bearerAuth: []
+      tags:
+        - Payments
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Payment ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Payment deleted successfully
+        "404":
+          description: "Payment or Budget not found"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure  
+  /api/payments/{bid}:
+    post:
+      summary: Create payment
+      security:
+        - bearerAuth: []
+      tags:
+        - Payments
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Payment ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createPayment'
+      responses:
+        "200":
+          description: Payment created successfully and stored in the database
+          content:
+            application/json:
+              schema:
+                  type: array
+                  items:
+                    $ref: '#components/schemas/Payments'
+        "404":
+          description: Budget not found
+        "400":
+          description: The payment has not provided all the required values
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure  
+components:
+  schemas:
+    Payments:
+      type: Object
+      parameters:
+        _id:
+          type: ObjectId
+          description: ID autogenerado de MongoDB (ObjectId)
+        amount:
+          type: Number
+          description: Pago que realizo el cliente
+        paymentDate: 
+          type: String
+          format: date-time
+          description: Fecha en la que se realizo el pago      
+        paymentMethod: 
+          type: String
+          enum: 
+            - Efectivo
+            - Transferencia
+            - Tarjeta
+            - Otro
+        notes:
+          type: String
+          description: Nota adicional en caso de ser necesaria
+      example:
+        _id: ObjectId("dasdasdas545sd4a14")
+        amount: 150000
+        paymentDate: "2024-10-22T14:30:00Z"
+        paymentMethod: "Transferencia"
+        notes: 
+  requestBodies:
+    updatePayment:
+      type: Object
+      parameters:
+        amount:
+          type: Number
+          description: Pago que realizo el cliente
+        notes:
+          type: String
+          description: Nota adicional en caso de ser necesaria
+      example:
+        amount: 170000
+        notes: "El pago se actualizo por un error en la creacion del usuario"
+    createPayment:
+      type: Object
+      parameters:
+        amount:
+          type: Number
+          description: Pago que realizo el cliente    
+        paymentMethod: 
+          type: String
+          enum: 
+            - Efectivo
+            - Transferencia
+            - Tarjeta
+            - Otro
+        notes:
+          type: String
+          description: Nota adicional en caso de ser necesaria
+      example:
+        amount: 150000
+        paymentMethod: "Efectivo"
+        notes:

@@ -1,0 +1,248 @@
+paths:
+  /api/clients:
+    get:
+      summary: Get all clients
+      security:
+        - bearerAuth: []  # Esto indica que la ruta requiere autenticación con JWT
+      tags:
+        - Clients
+      responses:
+        "200":
+          description: All clients were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Clients'
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    post:
+      summary: Create Client
+      security:
+        - bearerAuth: []
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createClient'
+      responses:
+        "201":
+          description: Client created successfully and stored in the database
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Clients'
+        "400":
+          description: Client error occurred during the request
+          content:
+            application/json:
+              examples:
+                EntityAlreadyExists:
+                  summary: Client Already Exists
+                  value:
+                    message: "Client already exists"
+                IncompleteValues:
+                  summary: Incomplete Values
+                  value:
+                    message: "The client has not provided all the required values"
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/clients/{cid}:
+    get:
+      summary: Get client
+      security:
+        - bearerAuth: []
+      tags:
+        - Clients
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Client was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Clients'
+        "404":
+          description: Client not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    put:
+      summary: Update client
+      security:
+        - bearerAuth: []
+      tags:
+        - Clients
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateClient'
+      responses:
+        "200":
+          description: Client updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Clients'
+        "404":
+          description: Client not found
+        "400":
+          description: The phone number has already been taken
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    delete:
+      summary: Delete client
+      security:
+        - bearerAuth: []
+      tags:
+        - Clients
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Client deleted successfully
+        "404":
+          description: Client not found
+        "400":
+          description: The client has jobs that aren't finished and budgets that are accepted
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/clients/phone:
+    post:
+      summary: Get client by phone
+      security:
+        - bearerAuth: []
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/getClientByPhone'
+      responses:
+        "200":
+          description: Client updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Clients'
+        "404":
+          description: Client not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+components:
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT  # Indicar que es un JWT
+  schemas:
+    Clients:
+      type: Object
+      parameters:
+        _id:
+          type: ObjectId
+          description: ID autogenerado de MongoDB (ObjectId)
+        name:
+          type: String
+          description: Nombre del cliente
+        lastName:
+          type: String
+          description: Apellido del cliente
+        address:
+          type: String
+          description: Direccion del cliente
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+        jobs:
+          type: Array
+          description: ID del trabajo
+      example:
+        _id: ObjectId('dasdasdas545sd4a14')
+        name: "Marta"
+        lastName: "Chamorro"
+        address: "Riobamba 2010"
+        phone: "3415941014"
+        jobs: ["dasdasdas545qw4a14", "dasdasdas545sd4aw4"]
+  requestBodies:
+    createClient:
+      type: Object
+      parameters:
+        name:
+          type: String
+          description: Nombre del cliente
+        lastName:
+          type: String
+          description: Apellido del cliente
+        address:
+          type: String
+          description: Direccion del cliente
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+      example:
+        name: "Marta"
+        lastName: "Chamorro"
+        address: "Riobamba 2010"
+        phone: "3415941014"
+    updateClient:
+      type: Object
+      parameters:
+        name:
+          type: String
+          description: Nombre del cliente
+        lastName:
+          type: String
+          description: Apellido del cliente
+        address:
+          type: String
+          description: Direccion del cliente
+        phone:
+          type: String
+          description: Número de teléfono del usuario
+      example:
+        name: "Marta"
+        lastName: "Chamorro"
+        address: "Riobamba 2010"
+        phone: "3415941014"
+    getClientByPhone:
+      type: Object
+      parameters:
+        phone:
+          type: String
+          decription: Telefono de contacto del cliente
+      example:
+        phone: "3415941014"

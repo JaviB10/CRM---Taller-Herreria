@@ -1,0 +1,250 @@
+paths:
+  /api/budgets:
+    get:
+      summary: Get all budgets
+      security:
+        - bearerAuth: []
+      tags:
+        - Budgets
+      responses:
+        "200":
+          description: All budgets were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Budgets'
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/budgets/{bid}:
+    get:
+      summary: Get budget
+      security:
+        - bearerAuth: []
+      tags:
+        - Budgets
+      parameters:
+        - name: bid
+          in: path
+          required: true
+          description: Budget ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Budget was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Budgets'
+        "404":
+          description: Budget not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    put:
+      summary: Update budget
+      security:
+        - bearerAuth: []
+      tags:
+        - Budgets
+      parameters:
+        - name: bid
+          in: path
+          required: true
+          description: Budget ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateBudget'
+      responses:
+        "200":
+          description: Budget updated successfully
+          content:
+            application/json:
+              schema:
+                type: Object
+                items:
+                  $ref: '#components/schemas/Budgets'  
+        "404":
+          description: Budget not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/budgets/material/{bid}:
+    put:
+      summary: Update materials
+      security:
+        - bearerAuth: []
+      tags:
+        - Budgets
+      parameters:
+        - name: bid
+          in: path
+          required: true
+          description: Budget ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateMaterialBudget'
+      responses:
+        "200":
+          description: Materials updated successfully
+          content:
+            application/json:
+              schema:
+                type: Object
+                items:
+                  $ref: '#components/schemas/Budgets'  
+        "404":
+          description: Budget not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/budgets/remove/{bid}/{mid}:
+    get:
+      summary: Delete material to budget
+      security:
+        - bearerAuth: []
+      tags:
+        - Budgets
+      parameters:
+        - name: bid
+          in: path
+          required: true
+          description: Budget ID
+          schema:
+            $type: String
+        - name: mid
+          in: path
+          required: true
+          description: Material ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Materials deleted successfully to budget
+          content:
+            application/json:
+              schema:
+                type: Object
+                items:
+                  $ref: '#components/schemas/Budgets'  
+        "404":
+          description: Budget not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+components:
+  schemas:
+    Budgets:
+      type: Object
+      parameters:
+        _id:
+          type: ObjectId
+          description: ID autogenerado de MongoDB (ObjectId)
+        payments:
+          type: Array
+          parameters:
+            amount:
+              type: Number
+              description: Pago que realizo el cliente
+            paymentDate: 
+              type: String
+              format: date-time
+              description: Fecha en la que se realizo el pago      
+            paymentMethod: 
+                type: String
+                enum: 
+                  - Efectivo
+                  - Transferencia
+                  - Tarjeta
+                  - Otro
+            notes:
+              type: String
+              description: Nota adicional en caso de ser necesaria
+        materials: 
+          type: Array
+          parameters:
+            materialName:
+              type: String
+              description: Nombre del material
+            amount:
+              type: Number
+              description: Cantidad del material
+            price:
+              type: Number
+              description: Precio unitario del material
+        totalMaterialCost:
+          type: Number
+          description: Costo total de los materiales del presupuesto
+        labourCost:
+          type: Number
+          description: Costo total de la mano de obra del trabajo
+        paidAmount:
+          type: Number
+          description: Pagos totales del cliente
+        paymentStatus:
+          type: String
+          description: Estado del pago del trabajo
+          enum:
+            - No pagado
+            - Parcialmente pagado
+            - Pagado completamente
+      example:
+        _id: ObjectId('dasdasdas545sd4a14')
+        payments: [
+          {
+            amount: 150000,
+            paymentDate: "2024-10-22T14:30:00Z",
+            paymentMethod: "Transferencia"
+          }
+        ]
+        materials: [
+          {
+            materialName: "Clavos",
+            amount: 100,
+            price: 10
+          },
+          {
+            materialName: "Tornillos",
+            amount: 20,
+            price: 500
+          }
+        ]
+        totalMaterialCost: 11000
+        labourCost: 250000
+        paidAmount: 150000
+        paymentStatus: "Parcialmente pagado"
+  requestBodies:
+    updateBudget:
+      type: Object
+      parameters:
+        labourCost:
+          type: Number
+          description: Costo total de la mano de obra del trabajo
+      example:
+        labourCost: 100000
+    updateMaterialBudget:
+      type: Object
+      parameters:
+        materialName:
+          type: String
+          description: Nombre del material
+        amount:
+          type: Number
+          description: Cantidad del material
+        price:
+          type: Number
+          description: Precio unitario del material
+      example:
+        materialName: "Clavos"
+        amount: 100
+        price: 10

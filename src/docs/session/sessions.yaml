@@ -1,0 +1,52 @@
+paths:
+  /api/sessions/login:
+    post:
+      summary: Login and get JWT token
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/Login'
+      responses:
+        "200":
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Sessions'
+        "404":
+          description: Incorrect credentials
+        "500":
+            description: Internal server error, usually caused by a faulty query or a database connection failure
+components:
+  schemas:
+    Sessions:
+      type: Object
+      parameters:
+        status:
+          type: String
+          description: Estado de la sesion
+        payload:
+          type: String
+          description: Token de acceso
+      example:
+        status: "success"
+        payload: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzA0MmRhNTAzYWQ2MDEyNjYxN2FmNmEiLCJuYW1lIjoiSmF2aWVyIiwibGFzdF9uYW1lIjoiQmFsbG9uIiwicGhvbmUiOiIzNDEyMjk1NDgyIiwiZW1haWwiOiJqYXZpNDE5NUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRrWmZFRHhLVGZhNDJUREgzZHdHVHIudE1yOVZrV2UwQWovenhqZHkwa2s5YVpnNGdrWndzaSIsInJvbGUiOiJBRE1JTiIsIl9fdiI6MCwiaWF0IjoxNzI5NzgxNjIzLCJleHAiOjE3Mjk3ODUyMjN9.YwJkfhqeAqNc72y4ZqikgyZIwKztBPOWnD28zo8f6XA"
+  requestBodies:
+    Login:
+      type: Object
+      parameters:
+        email:
+          type: String
+          description: Email del usuario
+        password:
+          type: String
+          decription: Contraseña del usuario
+      example:
+        email: "javi4195@gmail.com"
+        password: "TOPgun22"

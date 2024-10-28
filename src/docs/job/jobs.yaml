@@ -1,0 +1,198 @@
+paths:
+  /api/jobs:
+    get:
+      summary: Get all jobs
+      security:
+        - bearerAuth: []
+      tags:
+        - Jobs
+      responses:
+        "200":
+          description: All jobs were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Jobs'
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/jobs/{jib}:
+    get:
+      summary: Get job
+      security:
+        - bearerAuth: []
+      tags:
+        - Jobs
+      parameters:
+        - name: jib
+          in: path
+          required: true
+          description: Job ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Job was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Jobs'
+        "404":
+          description: Job not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    put:
+      summary: Update job
+      security:
+        - bearerAuth: []
+      tags:
+        - Jobs
+      parameters:
+        - name: jib
+          in: path
+          required: true
+          description: Job ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateJob'
+      responses:
+        "200":
+          description: Job was successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Jobs'
+        "404":
+          description: Job not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+    delete:
+      summary: Delete job
+      security:
+        - bearerAuth: []
+      tags:
+        - Jobs
+      parameters:
+        - name: jib
+          in: path
+          required: true
+          description: Job ID
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Job deleted successfully
+        "404":
+          description: Job not found
+        "400":
+          description: The job has a budget that is accepted
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/jobs/{cid}:
+    post:
+      summary: Create Job
+      security:
+        - bearerAuth: []
+      tags:
+        - Jobs
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createJob'
+      responses:
+        "201":
+          description: Job created successfully and stored in the database
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Jobs'
+        "404":
+          description: Client not found
+        "500":
+          description: Internal server error, usually caused by a faulty query or a database connection failure
+components:
+  schemas:
+    Jobs:
+      type: object
+      parameters:
+        _id:
+          type: ObjectId
+          description: ID autogenerado de MongoDB (ObjectId)
+        details:
+          type: String
+          description: Detalle del trabajo
+        isFinished:
+          type: Boolean
+          description: Trabajo finalizado si o no
+        finishAt:
+          type: String
+          format: date-time
+          description: Fecha de cuando se finalice el trabajo
+        budgetAccepted:
+          type: Boolean
+          description: Presupuesto aceptado
+        acceptedAt:
+          type: String
+          format: date-time
+          description: Fecha de cuando se acepte el presupuesto
+        client:
+          type: String
+          description: ID del cliente
+        budget:
+          type: String
+          description: ID del presupuesto
+      example:
+        _id: ObjectId('dasdasdas545sd4a14')
+        details: "Realizacion de reja"
+        isFinished: false
+        finishAt: null
+        budgetAccepted: true
+        acceptedAt: "2024-10-22T14:30:00Z" 
+        client: "dasdasdas545sd4a55" 
+        budget: "dasdasdas545sd4aff" 
+  requestBodies:
+    updateJob:
+      type: object
+      parameters:
+        details:
+          type: String
+          description: Detalle del trabajo
+        isFinished:
+          type: Boolean
+          description: Trabajo finalizado si o no
+        budgetAccepted:
+          type: Boolean
+          description: Presupuesto aceptado
+      example:
+        details: "Realizacion de reja"
+        isFinished: false
+        budgetAccepted: true
+    createJob:
+      type: object
+      parameters:
+        details:
+          type: String
+          description: Detalle del trabajo
+      example:
+        details: "Realizacion de reja"
