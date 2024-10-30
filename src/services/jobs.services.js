@@ -53,6 +53,16 @@ const deleteJobService = async (jid) => {
     if (!job) throw new EntityNotFound("Job not found");
     if (job.budgetAccepted === true) throw new CantDeleteEntity("The job has a budget that is accepted")
 
+    if (job.budget.payments) {
+        for(const payment of job.budget.payments) {
+            const pid = payment._id;
+            await paymentssRepository.deletePaymentRepository(pid);
+        }
+    }
+
+    const bid = job.budget._id;
+    await budgetsRepository.deleteBudgetRepository(bid);
+
     return await jobRepository.deleteJobRepository(jid);
 }
 

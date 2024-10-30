@@ -1,7 +1,13 @@
+import BudgetsRepository from "../repositories/budgets.repository.js";
 import ClientsRepository from "../repositories/clients.repository.js";
+import JobsRepository from "../repositories/jobs.repository.js";
+import PaymentsRepository from "../repositories/payments.repository.js";
 import { CantDeleteEntity, EntityAlreadyExists, EntityContactAlreadyExists, EntityNotFound, IncompleteValues } from "../utils/custom-exceptions.js";
 
 const clientRepository = new ClientsRepository();
+const jobsRepository = new JobsRepository();
+const budgetsRepository = new BudgetsRepository();
+const paymentssRepository = new PaymentsRepository();
 
 const getClientsService = async () => {
     return await clientRepository.getClientsRepository();
@@ -50,8 +56,18 @@ const deleteClientService = async (cid) => {
 
     for (const job of client.jobs) {
         if (job.budgetAccepted === true && job.isFinished === false) throw new CantDeleteEntity("The client has jobs that aren't finished and budgets that are accepted");
+        if (job.budget.paymentStatus == "No pagado") throw new CantDeleteEntity("The client hasn't paid for the job");
+        
+        for(const payment of job.budget.payments) {
+            const pid = payment._id;
+            await paymentssRepository.deletePaymentRepository(pid);
+        }
+        const bid = job.budget._id;
+        await budgetsRepository.deleteBudgetRepository(bid);
+        
+        const jid = job._id;
+        await jobsRepository.deleteJobRepository(jid);
     }
-
     return await clientRepository.deleteClientRepository(cid);
 }
 
