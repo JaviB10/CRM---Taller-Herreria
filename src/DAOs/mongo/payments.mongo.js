@@ -10,7 +10,7 @@ export default class Payments {
         return await paymentModel.find().lean();
     }
 
-    getJobById = async (pid) => {
+    getPaymentById = async (pid) => {
         return await paymentModel.findOne({ _id: pid }).populate("budget").lean();
     }
 

@@ -11,7 +11,7 @@ export default class PaymentsRepository {
     }
 
     getPaymentByIdRepository = async (pid) => {
-        const job = await this.dao.getJobById(pid);
+        const job = await this.dao.getPaymentById(pid);
         return job;
     }
 

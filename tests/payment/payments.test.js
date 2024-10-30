@@ -25,10 +25,10 @@ describe('Testing payments', async () => {
         cookie = loginResult.headers['set-cookie'][0];
 
         const clientsMock = {
-            name: 'Renata',
+            name: 'Julieta',
             lastName: 'Ballon',
-            address: 'Cerrito 7500',
-            phone: '3417845941'
+            address: 'Campbell 7500',
+            phone: '3413002943'
         }
 
         const clientResult = await requester
@@ -41,7 +41,7 @@ describe('Testing payments', async () => {
         expect(clientResult.statusCode).to.be.eql(201);
        
         const jobsMock = {
-            details: 'Mesa ratonera para living'
+            details: 'Juego de mesa y sillas de acero inoxidable'
         }
 
         const jobResult = await requester
@@ -58,14 +58,13 @@ describe('Testing payments', async () => {
             .set('Cookie', cookie)
         
         bid = getJobResult.body.data.budget._id;
-
-        expect(jobResult.statusCode).to.be.eql(200);
+        expect(getJobResult.statusCode).to.be.eql(200);
     });
 
     it('Debe crear satisfactoriamente un pago y agregarlo al presupuesto cambiando los valores que se calculan solos', async () => {
 
         const paymentsMock = {
-            amount: 25000,
+            amount: 250000,
             paymentMethod: 'Transferencia'
         }
 
@@ -84,7 +83,7 @@ describe('Testing payments', async () => {
         
         expect(budgetResult.statusCode).to.be.eql(200);
         expect(budgetResult.body.data.paidAmount).to.be.eql(250000);
-        expect(budgetResult.body.data.paymentStatus).to.be.eql('Parcialmente Pagado');
+        expect(budgetResult.body.data.paymentStatus).to.be.eql('Pagado completamente');
     });
 
     it('Debe dar error al querer crear un nuevo pago y no haber enviado todos los datos', async () => {
@@ -98,20 +97,19 @@ describe('Testing payments', async () => {
             .send(paymentsMock)
         
         expect(paymentResult.statusCode).to.be.eql(400);
-        expect(paymentResult.body.data).to.have.property('error', 'The payment has not provided all the required values');
+        expect(paymentResult.body).to.have.property('error', 'The payment has not provided all the required values');
     });
 
     it('Debe actualizar el pago satisfactoriamente y cambiar los valores en el presupuesto', async () => {
         const paymentsMock = {
-            amount: 20000,
+            amount: 10000,
             paymentMethod: 'Efectivo'
         }
-
+        
         const paymentResult = await requester
-            .put(`/api/payments/${bid}`)
+            .put(`/api/payments/${pid}`)
             .set('Cookie', cookie)
             .send(paymentsMock)
-        console.log(paymentResult.body);
         
         expect(paymentResult.statusCode).to.be.eql(200);
 
@@ -120,14 +118,14 @@ describe('Testing payments', async () => {
             .set('Cookie', cookie)
         
         expect(budgetResult.statusCode).to.be.eql(200);
-        expect(budgetResult.body.data.paidAmount).to.be.eql(200000);
-        expect(budgetResult.body.data.paymentStatus).to.be.eql('Parcialmente Pagado');
+        expect(budgetResult.body.data.paidAmount).to.be.eql(10000);
+        expect(budgetResult.body.data.paymentStatus).to.be.eql('Parcialmente pagado');
     });
 
     it('Debe eliminar el payment satisfactoriamente y cambiar los valores correspondientes en el presupuesto', async () => {
         const paymentResult = await requester
             .delete(`/api/payments/${pid}`)
-            set('Cookie', cookie)
+            .set('Cookie', cookie)
         
         expect(paymentResult.statusCode).to.be.eql(200);
 

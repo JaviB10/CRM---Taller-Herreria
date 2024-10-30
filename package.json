@@ -4,7 +4,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "test": "mocha tests/budget/*.js",
+    "test": "mocha tests/**/*.js",
     "start": "nodemon src/app.js"
   },
   "keywords": [],

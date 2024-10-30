@@ -50,27 +50,26 @@ const createPaymentService = async (payment, bid) => {
 
 const updatePaymentService = async (pid, payment) => {
     const existingPayment = await paymentsRepository.getPaymentByIdRepository(pid);
-    
+ 
     if (!existingPayment) throw new EntityNotFound("Payment not found");
-    if (existingPayment.hasOwnProperty('paymentDate')) throw new CantUpdateEntity("Cannot directly update paymentDate. Use the appropriate methods to update these values.");
+    if (payment.hasOwnProperty('paymentDate')) throw new CantUpdateEntity("Cannot directly update paymentDate. Use the appropriate methods to update these values.");
 
     const updatedPayment = { ...existingPayment, ...payment };
     await paymentsRepository.updatePaymentRepository(pid, updatedPayment);
 
-    const bid = existingPayment.budget;
+    const bid = existingPayment.budget._id;
     const existingBudget = await budgetsRepository.getBudgetByIdRepository(bid);
     
     if (!existingBudget) throw new EntityNotFound("Budget not found");
 
     // Recalcular el total de pagos del presupuesto
     const totalPayments = existingBudget.payments.reduce((acc, payment) => acc + payment.amount, 0);
-
     // Actualizar el campo de pago total en el presupuesto
     existingBudget.paidAmount = totalPayments;
 
-    if (totalPayments >= budget.totalMaterialCost + budget.labourCost) budget.paymentStatus = "Pagado completamente";
-    if (totalPayments > 0) budget.paymentStatus = "Parcialmente pagado";
-    if (totalPayments == 0) budget.paymentStatus = "No pagado";
+    if (totalPayments >= existingBudget.totalMaterialCost + existingBudget.labourCost) existingBudget.paymentStatus = "Pagado completamente";
+    if (totalPayments > 0) existingBudget.paymentStatus = "Parcialmente pagado";
+    if (totalPayments == 0) existingBudget.paymentStatus = "No pagado";
 
     await budgetsRepository.updateBudgetRepository(bid, existingBudget);
 
@@ -96,8 +95,8 @@ const deletePaymentService = async (pid) => {
     existingBudget.paidAmount = totalPayments;
 
     if (totalPayments >= existingBudget.totalMaterialCost + existingBudget.labourCost) existingBudget.paymentStatus = "Pagado completamente";
-    else if (totalPayments > 0) existingBudget.paymentStatus = "Parcialmente pagado";
-    else if (totalPayments == 0) existingBudget.paymentStatus = "No pagado";
+    if (totalPayments > 0) existingBudget.paymentStatus = "Parcialmente pagado";
+    if (totalPayments == 0) existingBudget.paymentStatus = "No pagado";
 
     await budgetsRepository.updateBudgetRepository(bid, existingBudget);
 
