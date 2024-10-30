@@ -82,7 +82,7 @@ export default class Router {
                     return res.status(401).json({ error: message || 'Unauthorized' });
                 } 
                 req.user = user;
-                logger.info(`User ${user.username} authenticated successfully on ${req.url}`);
+                logger.info(`User ${user.email} authenticated successfully on ${req.url}`);
                 next();
             }) (req, res, next)
         } else {
@@ -98,10 +98,10 @@ export default class Router {
             return res.status(401).json({ message: "Unauthorized: No user found" });
         }
         if (!policies.includes(user.role.toUpperCase())) {
-            logger.warning(`Forbidden access by ${user.username} to ${req.url}`);
+            logger.warning(`Forbidden access by ${user.email} to ${req.url}`);
             return res.status(403).json({ message: "Forbidden" });
         }
-        logger.info(`User ${user.username} passed policy check for ${req.url}`);
+        logger.info(`User ${user.email} passed policy check for ${req.url}`);
         req.user = user;
         next();
     }
