@@ -273,9 +273,9 @@
   <summary><h2>📖 Documentación de la API con Swagger</h2></summary>
   <h5>Para facilitar la comprensión y uso de la API, se ha integrado Swagger en el proyecto. Puedes acceder a la documentación interactiva de la API en la siguiente URL:</h5>
   
-  http://localhost:3000/api-docs
+  http://localhost:8080/api-docs
 
-  <p><strong>(Nota: Asegúrate de reemplazar `localhost:3000` con la URL de tu servidor si estás desplegando la aplicación en un entorno diferente.)</strong></p>
+  <p><strong>(Nota: Asegúrate de reemplazar `localhost:8080` con la URL de tu servidor si estás desplegando la aplicación en un entorno diferente.)</strong></p>
   
   <h5>¿Qué es Swagger?</h5>
   
