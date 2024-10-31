@@ -6,9 +6,9 @@ const requester = supertest('http://localhost:8080');
 
 describe('Testing jobs', () => {
     let cookie;
+    let cid;
     let jib;
-    const cid = '671003ebe864e9eeae269365'
-
+    
     before(async function() {
         const credentialsMock = {
             email: 'javi4195@gmail.com',
@@ -20,11 +20,35 @@ describe('Testing jobs', () => {
         expect(loginResult.status).to.be.eql(200);
         
         cookie = loginResult.headers['set-cookie'][0];
+
+        const clientsMock = {
+            name: 'Liliana',
+            lastName: 'Ballon',
+            address: '3 de febrero 3400',
+            phone: '3414562312'
+        }
+
+        const clientResult = await requester
+            .post('/api/clients/')
+            .set('Cookie', cookie)
+            .send(clientsMock);
+
+        cid = clientResult.body.data._id
+
+        expect(clientResult.statusCode).to.be.eql(201);
     });
+
+    after(async function() {
+        const clientRestult = await requester
+            .delete(`/api/clients/${cid}`)
+            .set('Cookie', cookie)
+        
+        expect(clientRestult.statusCode).to.be.eql(200)
+    })
 
     it('Debe crar un nuevo trabajo para un cliente', async () => {
         const jobsMock = {
-            details: 'Porton para frente de la casa'
+            details: 'Realizacion de un porton para el frente de la casa'
         }
 
         const jobResult = await requester
@@ -113,5 +137,5 @@ describe('Testing jobs', () => {
             .set('Cookie', cookie)
             
         expect(jobResult.statusCode).to.be.eql(200);
-    })
+    });
 })

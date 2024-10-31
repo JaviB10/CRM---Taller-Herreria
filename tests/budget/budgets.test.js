@@ -137,17 +137,11 @@ describe('Testing budgets', async () => {
         expect(updatedBudgetResult.body.data.totalMaterialCost).to.be.eql(0);
     })
 
-    it('Debe eliminar tanto al cliente creado como al trabajo satisfactoriamente', async () => {
+    it('Debe eliminar tanto al cliente creado satisfactoriamente', async () => {
         const clientResult = await requester
             .delete(`/api/clients/${cid}`)
             .set('Cookie', cookie)
         
         expect(clientResult.statusCode).to.be.eql(200);
-
-        const jobResult = await requester
-            .delete(`/api/jobs/${jid}`)
-            .set('Cookie', cookie)
-        
-        expect(jobResult.statusCode).to.be.eql(200);
     });
 })
