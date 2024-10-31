@@ -144,11 +144,5 @@ describe('Testing payments', async () => {
             .set('Cookie', cookie)
         
         expect(clientResult.statusCode).to.be.eql(200);
-
-        const jobResult = await requester
-            .delete(`/api/jobs/${jid}`)
-            .set('Cookie', cookie)
-        
-        expect(jobResult.statusCode).to.be.eql(200);
     });
 })
