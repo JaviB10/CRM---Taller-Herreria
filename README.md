@@ -269,6 +269,32 @@
   ```
 </details>
 
+<details>
+  <summary><h2>📖 Documentación de la API con Swagger</h2></summary>
+  <h5>Para facilitar la comprensión y uso de la API, se ha integrado Swagger en el proyecto. Puedes acceder a la documentación interactiva de la API en la siguiente URL:</h5>
+  
+  http://localhost:3000/api-docs
+
+  <p><strong>(Nota: Asegúrate de reemplazar `localhost:3000` con la URL de tu servidor si estás desplegando la aplicación en un entorno diferente.)</strong></p>
+  
+  <h5>¿Qué es Swagger?</h5>
+  
+  <p>Swagger es una herramienta que permite documentar APIs de forma visual, facilitando a los desarrolladores entender cómo interactuar con los diferentes endpoints disponibles. Con la interfaz de Swagger, puedes probar cada endpoint directamente desde el navegador.</p>
+  
+  <h5>Cómo usar Swagger</h5>
+  <ul>
+      <li><strong>Accede a la URL de Swagger:</strong> Abre tu navegador y ve a la URL mencionada anteriormente.</li>
+      <li><strong>Explora los endpoints:</strong> Puedes ver todos los endpoints disponibles, junto con sus métodos (GET, POST, etc.) y parámetros.</li>
+      <li><strong>Probar la API:</strong> 
+        <ul>
+          <li>Primero, utiliza el endpoint de `/sessions` para autenticarte. Este endpoint te devolverá un token que necesitarás para autorizar tus solicitudes a otros endpoints.</li>
+          <li>Segundo, en la parte superior encontraras un boton AUTHORIZE, ahi deberas colocar el token obtenido y validarlo.</li>
+          <li>Tercero, selecciona cualquier endpoint y usa el botón "Try it out" para probarlo con datos de entrada. Swagger mostrará la respuesta de la API en tiempo real.</li>
+        </ul>
+  </ul>
+  <p>Asegúrate de que tu servidor esté en funcionamiento para acceder a la documentación.</p>
+</details>
+
 <details open id="licencia">
   <summary><h2>📜 Licencia</h2></summary>
   <h4>Distribuido bajo la licencia MIT.</h4>
