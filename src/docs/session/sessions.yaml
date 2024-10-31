@@ -49,4 +49,4 @@ components:
           decription: Contraseña del usuario
       example:
         email: "javi4195@gmail.com"
-        password: "TOPgun22"
+        password: "topgun22"
