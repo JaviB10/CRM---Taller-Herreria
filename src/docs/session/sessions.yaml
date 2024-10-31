@@ -23,6 +23,18 @@ paths:
           description: Incorrect credentials
         "500":
             description: Internal server error, usually caused by a faulty query or a database connection failure
+  /api/sessions/logout:
+    post:
+      summary: Logout user
+      security:
+        - bearerAuth: []
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Access token deleted successfully
+        "500":
+            description: Internal server error, usually caused by a faulty query or a database connection failure
 components:
   schemas:
     Sessions:
