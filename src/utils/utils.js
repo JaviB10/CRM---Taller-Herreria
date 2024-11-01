@@ -11,7 +11,8 @@ const __mainDirname = path.join(__dirname, "..")
 export default __mainDirname;
 
 export const generateToken = (user) => {
-    return jwt.sign(user, PRIVATE_KEY, { expiresIn: "1h" });
+    const payload = { id: user._id, email: user.email, role: user.role };
+    return jwt.sign(payload, PRIVATE_KEY, { expiresIn: "1h" });
 }
 
 export const generateTokenPassword = (user) => {

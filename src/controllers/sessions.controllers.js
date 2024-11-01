@@ -15,7 +15,11 @@ const login = async (req, res) => {
             'CookieToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }
         ).send({
             status: "success",
-            playload: accessToken
+            payload: {
+                token: accessToken,
+                email: user.email,
+                role: user.role
+            }
         })
     } catch (error) {
         if (error instanceof IncorrectLoginCredentials) return res.sendClientError(error.message);
