@@ -27,7 +27,16 @@ const sessionsRouter = new RouterSessions();
 
 const app = express();
 
-app.use(cors())
+// Configuración de CORS
+const corsOptions = {
+    origin: "http://localhost:5173", // Cambia esto por el origen de tu frontend
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+    credentials: true, // Permitir el envío de cookies
+};
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
