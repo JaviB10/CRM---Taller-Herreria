@@ -12,7 +12,7 @@ const login = async (req, res) => {
         const accessToken = await loginService(password, user);
         
         return res.cookie(
-            'CookieToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }
+            'CookieToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true, sameSite: 'None', secure: true  }
         ).send({
             status: "success",
             payload: {
